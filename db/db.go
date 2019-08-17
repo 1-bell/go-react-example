@@ -17,6 +17,9 @@ type DB interface {
 	DeletePerson(email string) error
 	ListPersons(orderBy string) ([]*Person, error)
 
+	RetrievePerson(email string) (*Person, error)
+	UpdatePerson(email string, updatedPerson *Person) error
+
 	Close()
 }
 
@@ -68,12 +71,12 @@ func (my *MySqlDB) CreatePerson(person *Person) error {
 
 // DeletePerson deletes a person from the DB.
 func (my *MySqlDB) DeletePerson(email string) error {
-	updateQuery, err := my.db.Prepare("DELETE FROM Persons WHERE Email = ?;")
+	deleteQuery, err := my.db.Prepare("DELETE FROM Persons WHERE Email = ?;")
 	if err != nil {
 		return err
 	}
 
-	if _, err = updateQuery.Exec(email); err != nil {
+	if _, err = deleteQuery.Exec(email); err != nil {
 		return err
 	}
 
@@ -101,4 +104,30 @@ func (my *MySqlDB) ListPersons(orderBy string) ([]*Person, error) {
 	}
 
 	return persons, nil
+}
+
+// RetrievePerson retrieves a specific person by email.
+func (my *MySqlDB) RetrievePerson(email string) (*Person, error) {
+	selectQuery, err := my.db.Prepare("SELECT * FROM Persons WHERE Email = ?;")
+	if err != nil {
+		return nil, err
+	}
+
+	row := selectQuery.QueryRow(email)
+	person := &Person{}
+	return person, row.Scan(&person.Name, &person.Age, &person.Balance, &person.Email, &person.Address)
+}
+
+// UpdatePerson updates information for a specific person.
+func (my *MySqlDB) UpdatePerson(email string, updatedPerson *Person) error {
+	updateQuery, err := my.db.Prepare("UPDATE Persons SET Name = ?, Age = ?, Balance = ?, Email = ?, Address = ? WHERE Email = ?;")
+	if err != nil {
+		return err
+	}
+
+	if _, err = updateQuery.Exec(updatedPerson.Name, updatedPerson.Age, updatedPerson.Balance, updatedPerson.Email, updatedPerson.Address, email); err != nil {
+		return err
+	}
+
+	return nil
 }

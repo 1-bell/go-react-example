@@ -98,3 +98,58 @@ func (dAPI *DefaultAPI) ListPersons(w http.ResponseWriter, r *http.Request) {
 	resp, _ := json.Marshal(persons)
 	w.Write(resp)
 }
+
+// GetPerson retrieves a specific person by email.
+func (dAPI *DefaultAPI) GetPerson(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp, _ := json.Marshal(Response{Error: err.Error()})
+		w.Write(resp)
+		return
+	}
+
+	person, err := dAPI.db.RetrievePerson(r.FormValue("email"))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp, _ := json.Marshal(Response{Error: err.Error()})
+		w.Write(resp)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	resp, _ := json.Marshal(person)
+	w.Write(resp)
+}
+
+// UpdatePerson updates a specific persons's information.
+func (dAPI *DefaultAPI) UpdatePerson(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp, _ := json.Marshal(Response{Error: err.Error()})
+		w.Write(resp)
+		return
+	}
+
+	updatedPerson, err := dAPI.mapPersonPayload(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp, _ := json.Marshal(Response{Error: "Invalid payload."})
+		w.Write(resp)
+		return
+	}
+
+	if err := dAPI.db.UpdatePerson(r.FormValue("email"), updatedPerson); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp, _ := json.Marshal(Response{Error: "There was a problem with the server."})
+		w.Write(resp)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	resp, _ := json.Marshal(Response{Message: "Successfully updated the person."})
+	w.Write(resp)
+}

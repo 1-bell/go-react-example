@@ -12,6 +12,7 @@ After cloning the repo, assuming you have `docker` installed on your machine, do
 3. Start a browser and check the UI at `localhost:3000`.
 
 Note 1: `MySQL server` will run on port `3306`, the `Go API` on port `8080` and `React UI` on port `3000`.
+
 Note 2: to run services individually, check the `docker-compose.yml` to see the commands needed or run `docker-compose up <name-of-service>`.
 
 ## Tests
