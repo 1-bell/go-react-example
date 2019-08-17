@@ -12,6 +12,9 @@ type API interface {
 	CreatePerson(w http.ResponseWriter, r *http.Request)
 	DeletePerson(w http.ResponseWriter, r *http.Request)
 	ListPersons(w http.ResponseWriter, r *http.Request)
+
+	GetPerson(w http.ResponseWriter, r *http.Request)
+	UpdatePerson(w http.ResponseWriter, r *http.Request)
 }
 
 // DefaultAPI default implementation of API.
@@ -76,13 +79,17 @@ func (dAPI *DefaultAPI) DeletePerson(w http.ResponseWriter, r *http.Request) {
 func (dAPI *DefaultAPI) ListPersons(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	// TODO: get the query param sortBy here
-	sortBy := "name"
+	if err := r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp, _ := json.Marshal(Response{Error: err.Error()})
+		w.Write(resp)
+		return
+	}
 
-	persons, err := dAPI.db.ListPersons(sortBy)
+	persons, err := dAPI.db.ListPersons(r.FormValue("orderBy"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		resp, _ := json.Marshal(Response{Error: "There was a problem on the server."})
+		resp, _ := json.Marshal(Response{Error: err.Error()})
 		w.Write(resp)
 		return
 	}

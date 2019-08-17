@@ -16,7 +16,7 @@ services:
     build:
       context: .
     environment:
-      MYSQL_URL: ${CLEARDB_DATABASE_URL}
+      MYSQL_URL: ${MYSQL_URL}
     ports:
       - "8080:8080"
     tty: true

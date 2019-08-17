@@ -15,7 +15,7 @@ import (
 type DB interface {
 	CreatePerson(person *Person) error
 	DeletePerson(email string) error
-	ListPersons(sortBy string) ([]*Person, error)
+	ListPersons(orderBy string) ([]*Person, error)
 
 	Close()
 }
@@ -81,12 +81,12 @@ func (my *MySqlDB) DeletePerson(email string) error {
 }
 
 // ListPersons retrieves all persons sorting by the given column.
-func (my *MySqlDB) ListPersons(sortBy string) ([]*Person, error) {
-	if sortBy != "name" || sortBy != "email" {
-		return nil, errors.New("Unsupported sorting column: " + sortBy)
+func (my *MySqlDB) ListPersons(orderBy string) ([]*Person, error) {
+	if orderBy != "name" && orderBy != "email" {
+		return nil, errors.New("Unsupported sorting column: " + orderBy)
 	}
 
-	rows, err := my.db.Query("SELECT * FROM Persons ORDER BY " + sortBy + " DESC;")
+	rows, err := my.db.Query("SELECT * FROM Persons ORDER BY " + orderBy + " DESC;")
 	if err != nil {
 		return nil, err
 	}

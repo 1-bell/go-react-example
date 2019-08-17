@@ -6,6 +6,7 @@ import (
 
 	"github.com/bogdanguranda/go-react-example/api"
 	"github.com/bogdanguranda/go-react-example/db"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -45,7 +46,8 @@ func startAPIServer(dbMySQL db.DB) {
 	router.HandleFunc("/app/people", appAPI.DeletePerson).Methods(http.MethodDelete)
 
 	logrus.Info("REST API server listening on port " + portAPI)
-	if err := http.ListenAndServe(":"+portAPI, router); err != nil {
+
+	if err := http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)); err != nil {
 		logrus.Fatal("Failed to listen and serve on port " + portAPI)
 	}
 }
