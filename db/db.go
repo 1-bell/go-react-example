@@ -9,13 +9,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//go:generate mockgen -destination=./mocks/mock_db.go -package=db github.org/bogdanguranda/go-react-example/db DB
+//go:generate mockgen -destination=./mocks/mock_db.go -package=db github.com/bogdanguranda/go-react-example/db DB
 
 // DB describes CRUD methods for a database managing persons.
 type DB interface {
 	CreatePerson(person *Person) error
 	DeletePerson(email string) error
 	ListPersons(sortBy string) ([]*Person, error)
+
+	Close()
 }
 
 // MySqlDB implements DB interface using MySQL as database.
@@ -79,7 +81,7 @@ func (my *MySqlDB) DeletePerson(email string) error {
 }
 
 // ListPersons retrieves all persons sorting by the given column.
-func (my *MySqlDB) ListPersons(sortBy string) ([]*Persons, error) {
+func (my *MySqlDB) ListPersons(sortBy string) ([]*Person, error) {
 	if sortBy != "name" || sortBy != "email" {
 		return nil, errors.New("Unsupported sorting column: " + sortBy)
 	}
@@ -89,7 +91,7 @@ func (my *MySqlDB) ListPersons(sortBy string) ([]*Persons, error) {
 		return nil, err
 	}
 
-	persons := []*Persons{}
+	persons := []*Person{}
 	for rows.Next() {
 		person := &Person{}
 		if err := rows.Scan(&person.Name, &person.Age, &person.Balance, &person.Email, &person.Address); err != nil {

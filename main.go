@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/bogdanguranda/go-react-example/api"
+	"github.com/bogdanguranda/go-react-example/db"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"github.org/bogdanguranda/go-react-example/api"
-	"github.org/bogdanguranda/go-react-example/db"
 )
 
 const (
@@ -40,9 +40,9 @@ func startAPIServer(dbMySQL db.DB) {
 	appAPI := api.NewDefaultAPI(dbMySQL)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/app/people", appAPI.Register).Methods(http.MethodGet)
-	router.HandleFunc("/app/people", appAPI.LogIn).Methods(http.MethodPost)
-	router.HandleFunc("/app/people", appAPI.LogOut).Methods(http.MethodDelete)
+	router.HandleFunc("/app/people", appAPI.ListPersons).Methods(http.MethodGet)
+	router.HandleFunc("/app/people", appAPI.CreatePerson).Methods(http.MethodPost)
+	router.HandleFunc("/app/people", appAPI.DeletePerson).Methods(http.MethodDelete)
 
 	logrus.Info("REST API server listening on port " + portAPI)
 	if err := http.ListenAndServe(":"+portAPI, router); err != nil {

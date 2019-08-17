@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.org/bogdanguranda/go-react-example/db"
+	"github.com/bogdanguranda/go-react-example/db"
 )
 
 type Response struct {
@@ -21,5 +21,5 @@ func (dAPI *DefaultAPI) mapPersonPayload(r *http.Request) (*db.Person, error) {
 	}
 
 	person := db.Person{}
-	return &creds, json.Unmarshal(body, &person)
+	return &person, json.Unmarshal(body, &person)
 }

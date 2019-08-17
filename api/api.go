@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.org/bogdanguranda/go-react-example/db"
+	"github.com/bogdanguranda/go-react-example/db"
 )
 
 // API defines the REST API for managing persons.
@@ -36,7 +36,7 @@ func (dAPI *DefaultAPI) CreatePerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := dAPI.CreatePerson(person); err != nil {
+	if err := dAPI.db.CreatePerson(person); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		resp, _ := json.Marshal(Response{Error: "There was a problem with the server."})
 		w.Write(resp)
@@ -44,7 +44,7 @@ func (dAPI *DefaultAPI) CreatePerson(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	resp, _ := json.Marshal(SuccessResp{Cookie: cookie})
+	resp, _ := json.Marshal(Response{Message: "Successfully created the person."})
 	w.Write(resp)
 }
 
@@ -68,7 +68,7 @@ func (dAPI *DefaultAPI) DeletePerson(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	resp, _ := json.Marshal(profile)
+	resp, _ := json.Marshal(Response{Message: "Successfully deleted the person."})
 	w.Write(resp)
 }
 
