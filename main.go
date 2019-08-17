@@ -45,6 +45,9 @@ func startAPIServer(dbMySQL db.DB) {
 	router.HandleFunc("/app/people", appAPI.CreatePerson).Methods(http.MethodPost)
 	router.HandleFunc("/app/people", appAPI.DeletePerson).Methods(http.MethodDelete)
 
+	router.HandleFunc("/app/people/{email}", appAPI.GetPerson).Methods(http.MethodGet)
+	router.HandleFunc("/app/people/{email}", appAPI.UpdatePerson).Methods(http.MethodPut)
+
 	logrus.Info("REST API server listening on port " + portAPI)
 
 	if err := http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)); err != nil {

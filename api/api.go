@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"path"
 
 	"github.com/bogdanguranda/go-react-example/db"
 )
@@ -103,14 +104,8 @@ func (dAPI *DefaultAPI) ListPersons(w http.ResponseWriter, r *http.Request) {
 func (dAPI *DefaultAPI) GetPerson(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := r.ParseForm(); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		resp, _ := json.Marshal(Response{Error: err.Error()})
-		w.Write(resp)
-		return
-	}
-
-	person, err := dAPI.db.RetrievePerson(r.FormValue("email"))
+	email := path.Base(r.RequestURI)
+	person, err := dAPI.db.RetrievePerson(email)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		resp, _ := json.Marshal(Response{Error: err.Error()})
@@ -127,13 +122,7 @@ func (dAPI *DefaultAPI) GetPerson(w http.ResponseWriter, r *http.Request) {
 func (dAPI *DefaultAPI) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := r.ParseForm(); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		resp, _ := json.Marshal(Response{Error: err.Error()})
-		w.Write(resp)
-		return
-	}
-
+	email := path.Base(r.RequestURI)
 	updatedPerson, err := dAPI.mapPersonPayload(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -142,7 +131,7 @@ func (dAPI *DefaultAPI) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := dAPI.db.UpdatePerson(r.FormValue("email"), updatedPerson); err != nil {
+	if err := dAPI.db.UpdatePerson(email, updatedPerson); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		resp, _ := json.Marshal(Response{Error: "There was a problem with the server."})
 		w.Write(resp)
