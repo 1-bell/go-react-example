@@ -26,8 +26,8 @@ type MySqlDB struct {
 }
 
 // NewMySqlDB creates a new MySqlDB.
-func NewMySqlDB(mySqlURL string) (*MySqlDB, error) {
-	db, err := TryConnect(mySqlURL, 3, 5)
+func NewMySqlDB(pwd string) (*MySqlDB, error) {
+	db, err := TryConnect("root:"+pwd+"@tcp(db:3306)/api_db", 3, 5)
 	if err != nil {
 		return nil, err
 	}

@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS app_db;
-USE app_db;
+CREATE DATABASE IF NOT EXISTS api_db;
+USE api_db;
 
 CREATE TABLE IF NOT EXISTS Persons (
      Name varchar(255),

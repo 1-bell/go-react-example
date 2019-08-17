@@ -2,13 +2,13 @@ FROM golang:alpine
 
 RUN apk --update add git bash
 
-WORKDIR /app
+WORKDIR /api
 
 ENV GO111MODULE=on
 
 COPY . ./
 RUN go build
 
-EXPOSE 8080 8081
+EXPOSE 8080
 
-CMD ["/app/go-react-example"]
+CMD ["/api/go-react-example"]

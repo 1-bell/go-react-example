@@ -7,19 +7,15 @@ A simple Golang REST API + React UI.
 ### For the API:
 After cloning the repo, assuming you have `docker` installed on your machine, do the following steps in the project folder:
 
-1. For local testing with MySQL run by Docker set env vars `MYSQL_PASS` for DB password and `MYSQL_URL` as the MySQL URL. 
-2. Run `docker-compose up` or `docker-compose up --build` if you want to rebuild everything and ignore the cache.
+1. Set the env var `MYSQL_PASS` to a password of choice for MySQL. 
+2. Run `docker-compose up` to spin all services.
+3. Start a browser and check the UI at `localhost:3000`.
 
-It will start serving requests on port `8080`.
-
-### For the UI:
-1. It's going to use node to serve the static files, so make sure you have `node` installed.
-2. Go to the root folder with `cd ui` and then run `npm start`.
-
-It will start serving static files on port `3000`.
+Note 1: `MySQL server` will run on port `3306`, the `Go API` on port `8080` and `React UI` on port `3000`.
+Note 2: to run services individually, check the `docker-compose.yml` to see the commands needed or run `docker-compose up <name-of-service>`.
 
 ## Tests
 
 Steps:
-1. API: generate Go mocks with `go generate ./...` and then run all Go tests with: `go test -v ./...`
-2. UI: go to the root folder with `cd ui` and then run `npm test`.
+1. API: generate Go mocks with `go generate ./...` and then run all Go tests with: `go test -v ./...`, assuming you have Go installed.
+2. UI: go to the root folder with `cd ui` and then run `npm test`, assuming you have node installed.

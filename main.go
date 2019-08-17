@@ -24,12 +24,12 @@ func main() {
 }
 
 func createDBConnection() db.DB {
-	mySqlURL := os.Getenv("MYSQL_URL")
-	if mySqlURL == "" {
-		logrus.Fatal("Env var MYSQL_URL  was not set!")
+	mySQLPass := os.Getenv("MYSQL_PASS")
+	if mySQLPass == "" {
+		logrus.Fatal("Env var MYSQL_PASS was not set!")
 	}
 
-	dbMySQL, err := db.NewMySqlDB(mySqlURL)
+	dbMySQL, err := db.NewMySqlDB(mySQLPass)
 	if err != nil {
 		logrus.Fatal(errors.Wrapf(err, "failed to start MySQL"))
 	}
