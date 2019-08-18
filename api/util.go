@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 
@@ -21,5 +22,17 @@ func (dAPI *DefaultAPI) mapPersonPayload(r *http.Request) (*db.Person, error) {
 	}
 
 	person := db.Person{}
-	return &person, json.Unmarshal(body, &person)
+	if err := json.Unmarshal(body, &person); err != nil {
+		return nil, err
+	}
+
+	return &person, dAPI.validatePerson(&person)
+}
+
+func (dAPI *DefaultAPI) validatePerson(person *db.Person) error {
+	if person.Email == "" {
+		return errors.New("Missing mandatory field 'email'")
+	}
+
+	return nil
 }

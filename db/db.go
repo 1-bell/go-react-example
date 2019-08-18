@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"errors"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -85,10 +84,6 @@ func (my *MySqlDB) DeletePerson(email string) error {
 
 // ListPersons retrieves all persons sorting by the given column.
 func (my *MySqlDB) ListPersons(orderBy string) ([]*Person, error) {
-	if orderBy != "name" && orderBy != "email" {
-		return nil, errors.New("Unsupported sorting column: " + orderBy)
-	}
-
 	rows, err := my.db.Query("SELECT * FROM Persons ORDER BY " + orderBy + " DESC;")
 	if err != nil {
 		return nil, err

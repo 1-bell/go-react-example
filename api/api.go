@@ -56,15 +56,22 @@ func (dAPI *DefaultAPI) CreatePerson(w http.ResponseWriter, r *http.Request) {
 func (dAPI *DefaultAPI) DeletePerson(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	person, err := dAPI.mapPersonPayload(r)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		resp, _ := json.Marshal(Response{Error: "Invalid payload."})
+	if err := r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp, _ := json.Marshal(Response{Error: err.Error()})
 		w.Write(resp)
 		return
 	}
 
-	if err := dAPI.db.DeletePerson(person.Email); err != nil {
+	email := r.FormValue("email")
+	if email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		resp, _ := json.Marshal(Response{Error: "Missing parameter 'email'."})
+		w.Write(resp)
+		return
+	}
+
+	if err := dAPI.db.DeletePerson(email); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		resp, _ := json.Marshal(Response{Error: "There was a problem with the server."})
 		w.Write(resp)
@@ -87,7 +94,17 @@ func (dAPI *DefaultAPI) ListPersons(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	persons, err := dAPI.db.ListPersons(r.FormValue("orderBy"))
+	orderBy := r.FormValue("orderBy")
+	if orderBy == "" {
+		orderBy = "email"
+	} else if orderBy != "name" && orderBy != "email" {
+		w.WriteHeader(http.StatusBadRequest)
+		resp, _ := json.Marshal(Response{Error: "Unsupported sorting column: " + orderBy})
+		w.Write(resp)
+		return
+	}
+
+	persons, err := dAPI.db.ListPersons(orderBy)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		resp, _ := json.Marshal(Response{Error: err.Error()})
