@@ -9,6 +9,7 @@ import (
 	"github.com/bogdanguranda/go-react-example/db"
 )
 
+// Response is the JSON response of the API when no information about persons is requested.
 type Response struct {
 	Message string `json:"message,omitempty"`
 	Error   string `json:"error,omitempty"`
@@ -29,6 +30,7 @@ func (dAPI *DefaultAPI) mapPersonPayload(r *http.Request) (*db.Person, error) {
 	return &person, dAPI.validatePerson(&person)
 }
 
+// validatePerson validates mandatory fields on a person data.
 func (dAPI *DefaultAPI) validatePerson(person *db.Person) error {
 	if person.Email == "" {
 		return errors.New("Missing mandatory field 'email'")
