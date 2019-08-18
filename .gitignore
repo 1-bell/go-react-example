@@ -1,4 +1,5 @@
 go-react-example
-.DS_Store
 vendor/
+mocks
 ui/node_modules
+.DS_Store
