@@ -2,6 +2,8 @@
 
 A simple Golang REST API + React UI.
 
+![alt text](https://raw.githubusercontent.com/bogdanguranda/go-react-example/master/dashboard.png)
+
 ## Installation
 
 ### For the API:
