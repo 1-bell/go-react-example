@@ -19,7 +19,7 @@ const (
 func main() {
 	dbMySQL := createDBConnection()
 	defer dbMySQL.Close()
-
+	//은영이가젤이쁨
 	startAPIServer(dbMySQL)
 }
 
